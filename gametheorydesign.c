@@ -2,6 +2,94 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Simple rules, non optimal, more so to get used to making making a plan and then to create the code. To translate from an idea to code 
+// Build a terminal game in C where the player plays repeated 
+// Prisoners Dilemma game choice against an AI with 3 difficulty levels (Easy, Medium, Hard)
+
+/* ==================== Requirements =====================
+
+// The Situation:
+                - 2 suspected criminals are arrested.
+                - The police think that they were trying to rob a store--but the cops only have enough evidence to prove that they were trespassing.
+                - Thus, the police need one of criminals to rat ut the other to charge them for the bigger crime.
+
+                -- How can the police do this? -- Offer them a deal...
+
+    The Offer:
+            -- If no one confesses to robbery, the police can only charge the prisoners for trespassing. --- punishment: 1 year in jail each.
+
+            -- If one confesses and the other doesn't, the police will be lenient on the rat and severely punish the quiet one. --- punishment: 10 yrs in jail for the quiet one; 0 years for the rat
+
+            -- If both confess, the police punish both of them equally. --- punishment: They both get 5 years in jail.
+
+ 
+
+Game Rules ->  
+
+Players: 2 Players ---> one real player vs one ai user
+Strategies: Cooperate (C) ,  Defect (D)
+Payoffs:  cc(-1, -1) , dd(-5, -5), cd(-10, 0), dc(0, -10)           cc = both get three years of prison
+                                                            dd = both get one year of prison
+                                                            cd = user who cooperates gets 0 years of prison, user who didn't gets 5 years of prison
+                                                            dc = user who doesn't cooperate gets 5 years of prison, User who does get's 0 years of prison
+
+We will have it run 3 times, so a total of 3 rounds to be played by the user and the ai bot.
+When the game ends, print total scores and who "won"
+
+Difficulty ->
+                Easy: AI picks simple strategy: They are simply rational and bc of that rational players by rule never play a strictly dominanted strat
+                Medium: AI plays Tit-for-Tat (copy your last move that you did)
+                Hard: Ai uses a more punishing strategt (e.g. Grim Trigger: if you ever defect, it defects forever)
+
+UI -> 
+        Runs in a terminal.
+        Player sees:
+                        Current round
+                        Their last move and AI last move
+                        Current scores
+                        Prompt [c] Cooperate or [D] Defect?
+
+
+SCENES -->          ## I want to note that for memory sake? will this be an issue or an issue to do to 
+            TITLE_SCENE:
+                        - Prisoner's Dilemma
+                        - User gets prompt to type user_name
+                        - returns- Welcome Game Theorist (scanf" %c, user_name)
+
+            MAIN_MENU:
+                        - Show:
+                        - the three different level options --> Have the user select easy, medium, or hard
+                        - User taps easy -> sends them to new scene
+            
+            LEVEL_INTRO_SCENE: (easy)
+                        - Show Charector name and text box:
+                        - "Welcome, Theorists."
+                        - "In this level, you face a simple opponent "
+                        - "Each round won results to 1 star."
+                        - "The goal is to obtain all 3 stars to advance into the next round"
+                        - User preses the spacebar key to advance the dialogue lines
+                        - At the end: go to GAME_PLAY_SCENE
+
+            GAME_PLAY_SCENE:
+                        - Show:
+                        - Round number (1,2,3)
+                        - Current score
+                        - textbox: "Choose your move"
+                        - Player chooses action (Cooperate / Defect)
+                        - AI chooses action based on diffuculty
+                        - Result Text: " You cooperated"
+
+            LEVEL_RESULT_SCENE:
+                        - Compute stars: 
+                        - 3 wins -> You won all 3 rounds. Here are (3 c program created special charector design of a simple star) for winning! You are ready for the next level- good luck!
+                        - 2 wins -> You won 2 rounds. That is impressive. You obtained (2 c program created special charector design of a simple star) for winning!
+                        - 1 wins -> You only won 1 rounds. Do better. Here is a pity (1 c program created special charector design of a simple star)
+                        - Text box shows the message
+                        - "Press spaceBar to continue back to the main menu"
+
+            REPEAT;
+*/
+
 /* The offer (years in jail):
     - If no one confesses:
         Each gets 1 year -> payoff: (-1, -1)
@@ -231,7 +319,7 @@ void runMainMenuScene(GameState *state) {
     printf("========================================\n");
     printf("               MAIN MENU                \n");
     printf("========================================\n\n");
-    printf("Hello %s. Select your challenge:\n\n", state->playerName);
+    printf("%s. Select your challenge:\n\n", state->playerName);
     printf("  1) Easy\n");
     printf("  2) Medium\n");
     printf("  3) Hard\n");
