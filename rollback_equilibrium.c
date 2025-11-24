@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 // More practice of C programming for me incooperating game theory
-// Now i am creating puzzles that solve for nash equilibrium using 
+// Now i am creating puzzles that solve for r equilibrium using 
 // backward induction to solve. 
 
 // username length and answer length
@@ -17,6 +17,7 @@ typedef enum{
    SCENE_MAIN_MENU,
    SCENE_PUZZLE_1,
    SCENE_PUZZLE_2,
+   SCENE_PUZZLE_3,
    SCENE_EXIT
 } Scene;
 
@@ -116,6 +117,34 @@ void draw_puzzle_2_tree(void) {
     printf("   (4,4,4)    (4,4,3)(4,3,4)   (2,5,5)(3,4,4)   (5,2,5)(5,5,2)   (1,5,5)\n");
     printf("\n");
 }
+
+void draw_puzzle_3_tree(void) {
+    printf("\n");
+    printf("PUZZLE 3: Coordination Game\n");
+    printf("(B = Bart, C = Cassie, D = Dad)\n");
+    printf("A = Amusment park, S = Science muesum\n\n");
+    
+// game tree 3
+printf("                                    (B)\n");
+printf("                      ______________/ \\\\________________\n");
+printf("                     /                                 \\\n");
+printf("                    A                                    S\n");
+printf("                   /                                     \\\n");
+printf("                 (C)                                     (C)\n");
+printf("              __/  \\\\__                               __/  \\\\__\n");
+printf("             /        \\\\                             /        \\\\ \n");
+printf("            A            S                          A          S\n");
+printf("           /              \\\\                       /            \\\n");
+printf("     (3,2,4)             (D)                     (D)         (2,3,4)\n");
+printf("                       /  |  \\\\                /  |  \\\n");
+printf("                      /   |   \\\\              /   |   \\\n");
+printf("                     /    |    \\\\            /    |    \\\n");
+printf("              (3,2,2) (1,1,3) (2,3,2)   (3,2,2) (1,1,3) (2,3,2)\n");
+printf("\n");
+
+}
+
+
 
 bool checkAnswer(const char* userAnswer, const char* correctAnswer) {
     // Remove whitespace from both strings for comparison
@@ -268,10 +297,11 @@ void runMainMenuScene(GameState *state) {
     printf("            Main Menu          \n");
     printSeparator();
     printf("\n");
-    printf("Sup, %s. Select a puzzle and solve by finding the Nash Equilibrium!\n\n", state->playerName);
+    printf("Sup, %s. Select a puzzle and solve by finding the Rollback Equilibrium!\n\n", state->playerName);
 
     printf("  1) Puzzle 1: The Corporate Merger\n");
     printf("  2) Puzzle 2: Urban/Rural Mall Problem\n");
+    printf("  3) Puzzle 3: Coordination Game\n");
     printf("\n  0) Exit\n\n");
 
     int choice;
@@ -288,6 +318,8 @@ void runMainMenuScene(GameState *state) {
         state->scene = SCENE_PUZZLE_1;
     } else if (choice == 2) {
         state->scene = SCENE_PUZZLE_2;
+    } else if (choice == 3) {
+        state->scene = SCENE_PUZZLE_3;
     } else {
         printf("Invalid choice!\n");
         pressEnterToContinue();
@@ -307,7 +339,7 @@ void runPuzzleScene(GameState *state) {
     printf("Payoffs are in billions of dollars.\n\n");
     
     printf("YOUR TASK:\n");
-    printf("Use backward induction to find the Nash equilibrium.\n");
+    printf("Use backward induction to find the rollback equilibrium.\n");
     printf("Start from the bottom (terminal nodes) and work backwards!\n");
 
     draw_puzzle_1_tree();
@@ -317,7 +349,7 @@ void runPuzzleScene(GameState *state) {
     bool correctAnswer = false;
     
     while (!correctAnswer) {
-        printf("\nWhat is the Nash equilibrium payoff?\n");
+        printf("\nWhat is the rollback equilibrium payoff?\n");
         printf("Enter your answer in the format (x,y): ");
         
         if(fgets(userAnswer, MAX_INPUT_LENGTH, stdin) == NULL) {
@@ -340,7 +372,7 @@ void runPuzzleScene(GameState *state) {
         
         // Format is correct, now check answer
         if (checkAnswer(userAnswer, "(4,5)")) {
-            printf("\nCorrect! The Nash equilibrium here is (4,5).\n");
+            printf("\nCorrect! The roll back equilibrium here is (4,5).\n");
             printf("Alice opens friendly, Bob negotiates, and the deal creates maximum value\n");
             printf("with Bob capturing the bigger slice.\n");
             correctAnswer = true;
@@ -393,7 +425,7 @@ void runPuzzle2Scene(GameState *state) {
     printf("Mall if all three stores request those spaces; this is true even though Frieda's moves first.\n\n");
     
     printf("YOUR TASK:\n");
-    printf("Use backward induction to find the Nash equilibrium.\n");
+    printf("Use backward induction to find the Rollback equilibrium.\n");
     printf("Start from Titan's decisions and work backwards!\n");
 
     draw_puzzle_2_tree();
@@ -403,7 +435,7 @@ void runPuzzle2Scene(GameState *state) {
     bool correctAnswer = false;
     
     while (!correctAnswer) {
-        printf("\nWhat is the Nash equilibrium payoff?\n");
+        printf("\nWhat is the ROllback equilibrium payoff?\n");
         printf("Enter your answer in the format (x,y,z): ");
         
         if(fgets(userAnswer, MAX_INPUT_LENGTH, stdin) == NULL) {
@@ -442,6 +474,82 @@ void runPuzzle2Scene(GameState *state) {
     state->scene = SCENE_MAIN_MENU;
 }
 
+void runPuzzle3Scene(GameState *state) {
+    clearScreen();
+    printSeparator();
+    printf("            Puzzle 3            \n");
+    printSeparator();
+    
+    printf("\nSTORY:\n");
+    printf("To give Mom a day of rest, Dad plants to take his two children,\n");
+    printf("Bart and Cassie, on an outing on Sunday. \n");
+    printf("Bart prefers to go to the amusment park (A),\n");
+    printf("whereas Cassie preferes to go to the science muesum (S).\n\n");
+
+    printf("Each child gets 3 units of value from his/her more preferred activitiy\n");
+    printf("and only 2 units of value from his/her less preferred activity.\n");
+    printf("Dad get 2 units of value for either of the two activities.\n\n");
+
+    printf("To choose their activity, Dad plans first to ask Bart for his preference,\n");
+    printf("then to ask Cassie after she hears Bart’s choice.\n");
+    printf("Each child can choose either the amusment park (A) or the science museum (S).\n");
+    printf("If both children choose the same activity, then that is what they will all do.\n");
+    printf("If the children choose different activities, Dad will make a tie-breaking decision.\n");
+    printf("As the parent, Dad has an additional option: He can choose the amusement park, the science museum, or his personal favorite, the mountain hike (M).\n");
+    printf("Bart and Cassie each get 1 unit of value from the mountain hike, and Dad gets 3 units of value from the mountain hike.\n");
+    printf("Because Dad wants his children to cooperate with each other, he gets\n");
+    printf("2 extra units of value if the children choose the same activity (no\n");
+    printf("matter which one of the two it is).\n\n");
+
+    printf("YOUR TASK:\n");
+    printf("Use backward induction to find the rollback equilibrium.\n");
+    printf("Sometimes you have to look backwards to go forwards.\n");
+
+    draw_puzzle_3_tree();
+    
+    char userAnswer[MAX_INPUT_LENGTH];
+    int formatAttempts = 0;
+    bool correctAnswer = false;
+    
+    while (!correctAnswer) {
+        printf("\nWhat is the Rollback equilibrium payoff?\n");
+        printf("Enter your answer in the format (x,y,z): ");
+        
+        if(fgets(userAnswer, MAX_INPUT_LENGTH, stdin) == NULL) {
+            continue;
+        }
+        
+        // Check format first
+        if (!checkFormat3Players(userAnswer)) {
+            formatAttempts++;
+            if (formatAttempts == 1) {
+                printf("\nIncorrect format. Format needs to be in (x,y,z)\n");
+            } else if (formatAttempts == 2) {
+                printf("\nReally? Do I need to say it again? Format has to be in (x,y,z) format\n");
+            } else {
+                printf("\nYou're really making me add these extra lines of code to tell you the format again?\n");
+                printf("Format: (x,y,z)\n");
+            }
+            continue;
+        }
+        
+        // Format is correct, now check answer
+        if (checkAnswer(userAnswer, "(3,2,4)")) {
+            printf("\nCorrect! Outcome is (3,2,4).\n");
+            printf("The amusement park wins!\n");
+            printf("Bart gets the highest payoff, and the group stays unified.\n");
+            printf("You identified a Coordination Game Nash Equilibrium.\n");
+            printf("When players value being together, matching strategies wins.\n\n");
+            correctAnswer = true;
+        } else {
+            printf("\nThat is incorrect. Please try again.\n");
+        }
+    }
+    
+    pressEnterToContinue();
+    state->scene = SCENE_MAIN_MENU;
+}
+
 // MAIN FUNCTION 
 
 int main(int argc, char *argv[]) {
@@ -462,6 +570,9 @@ int main(int argc, char *argv[]) {
                 break;
             case SCENE_PUZZLE_2:
                 runPuzzle2Scene(&state);
+                break;
+            case SCENE_PUZZLE_3:
+                runPuzzle3Scene(&state);
                 break;
             case SCENE_EXIT:
             default:
